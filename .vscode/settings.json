@@ -1,0 +1,5 @@
+{
+    "python.defaultInterpreterPath": "/mnt/c/Users/Saul/fastapi-inbox-automation/.venv/bin/python",
+    "python.analysis.extraPaths": ["./app"],
+    "python.languageServer": "Pylance"
+}

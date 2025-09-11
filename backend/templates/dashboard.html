@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inbox Dashboard</title>
+</head>
+<body>
+  <h1>Inbox Stats</h1>
+  <ul>
+    <li>Total: {{ total }}</li>
+    <li>Spam: {{ spam }}</li>
+    <li>Unread: {{ unread }}</li>
+    <li>Recent (24h): {{ recent }}</li>
+  </ul>
+
+  <h2>Recent Emails</h2>
+  <ul>
+    {% for email in emails %}
+      <li>
+        <strong>{{ email.sender }}</strong> — {{ email.subject }}<br>
+        Received: {{ email.received_at }} | Spam: {{ email.is_spam }} | Read: {{ email.is_read }}
+      </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+celery
+redis
+sqlalchemy
+psycopg2-binary
+python-dotenv==1.1.1
+pydantic
+alembic>=1.11.0
