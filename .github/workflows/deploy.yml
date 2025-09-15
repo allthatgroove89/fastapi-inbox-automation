@@ -31,7 +31,7 @@ jobs:
           command_timeout: "5m"
           script: |
             echo "✅ Connected to EC2"
-            cd /home/ubuntu/app  # adjust to your app directory
+            cd /home/saulvera/fastapi-inbox-automation || exit 1 # adjust to your app directory
             docker compose pull
             docker compose down
             docker compose up -d
