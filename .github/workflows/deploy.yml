@@ -15,15 +15,15 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -saulverae/fastapi-inbox-automation:latest .
+          docker build -t saulverae/inbox-automation:latest .
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push saulverae/fastapi-inbox-automation:latest
+          docker push saulverae/inbox-automation:latest
 
       - name: Deploy via SSH to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
+          username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script_stop: true
@@ -31,7 +31,7 @@ jobs:
           command_timeout: "5m"
           script: |
             echo "✅ Connected to EC2"
-            cd /home/saulvera/fastapi-inbox-automation || exit 1 # adjust to your app directory
+            cd /home/ec2-user/fastapi-inbox-automation || exit 1 # adjust to your app directory
             docker compose pull
             docker compose down
             docker compose up -d
