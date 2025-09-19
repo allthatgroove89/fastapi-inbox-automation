@@ -31,7 +31,7 @@ jobs:
           script: |
             echo "✅ Connected to EC2"
             cd /home/ec2-user/fastapi-inbox-automation || exit 1 # adjust to your app directory
-            docker compose pull
-            docker compose down
-            docker compose up -d
-            docker compose ps
+            docker-compose pull
+            docker-compose down
+            docker-compose up -d
+            docker-compose ps
