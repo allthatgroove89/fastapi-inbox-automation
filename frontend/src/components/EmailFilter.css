@@ -1,0 +1,52 @@
+.email-filter {
+  margin-bottom: 2rem;
+}
+
+.email-filter__title {
+  font-size: 1.2em;
+  margin-bottom: 0.5rem;
+}
+
+.email-filter__hint {
+  font-size: 0.9em;
+  color: #4a5568;
+  margin-bottom: 1rem;
+}
+
+.email-filter__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.email-filter__controls button,
+.email-filter__reset {
+  background: #edf2f7;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5em 1em;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.email-filter__controls button:hover,
+.email-filter__reset:hover {
+  background: #e2e8f0;
+}
+
+.email-filter__dropdown select {
+  margin-left: 0.5em;
+  padding: 0.4em;
+  border-radius: 6px;
+  border: 1px solid #cbd5e0;
+  font-size: 0.95em;
+}
+
+.email-filter__search {
+  padding: 0.5em;
+  border-radius: 6px;
+  border: 1px solid #cbd5e0;
+  font-size: 0.95em;
+}
