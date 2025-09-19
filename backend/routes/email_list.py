@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Body
 from pydantic import BaseModel
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -6,9 +6,39 @@ from datetime import datetime, timedelta, timezone
 from database import SessionLocal, get_db
 from entities.email import EmailLog
 from entities.email_out import EmailOut
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 router = APIRouter(prefix="/email", tags=["email"])
+
+
+# Simple spam keywords for demonstration
+SPAM_KEYWORDS = ["spam", "viagra", "lottery", "prince", "free money", "winner", "click here"]
+
+class SpamFilterResult(BaseModel):
+    total_checked: int
+    marked_spam: int
+    details: List[Dict]
+
+
+# POST endpoint to run spam detection and update is_spam
+@router.post("/filter", response_model=SpamFilterResult)
+def filter_spam_emails(db: Session = Depends(get_db)):
+    emails = db.query(EmailLog).all()
+    marked_spam = 0
+    details = []
+    for email in emails:
+        is_spam = False
+        # Check subject and sender for spam keywords
+        for kw in SPAM_KEYWORDS:
+            if (kw in (email.subject or '').lower()) or (kw in (email.sender or '').lower()):
+                is_spam = True
+                break
+        if is_spam and not email.is_spam:
+            email.is_spam = True
+            marked_spam += 1
+            details.append({"id": email.id, "subject": email.subject, "sender": email.sender})
+    db.commit()
+    return SpamFilterResult(total_checked=len(emails), marked_spam=marked_spam, details=details)
 
 class EmailListResponse(BaseModel):
     total: int
