@@ -59,6 +59,7 @@
 - Paginated email list with collapsible sections (Inbox, Spam, etc.)
 - Animated button and card hover effects
 - Accessible forms and keyboard navigation
+![Dashboard Preview](frontend/image.png)
 
 ## Background Tasks
 - Celery worker processes email and spam tasks using Redis as broker
