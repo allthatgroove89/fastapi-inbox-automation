@@ -24,3 +24,7 @@ yarn-error.log*
 .env
 __pycache__/
 *.pyc
+
+# IDE and virtual environments
+.vscode/
+.venv/
