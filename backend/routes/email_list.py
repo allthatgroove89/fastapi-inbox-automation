@@ -3,9 +3,9 @@ from pydantic import BaseModel
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
-from backend.database import SessionLocal
-from backend.entities.email import EmailLog
-from backend.entities.email_out import EmailOut
+from database import SessionLocal, get_db
+from entities.email import EmailLog
+from entities.email_out import EmailOut
 from typing import List, Optional
 
 router = APIRouter(prefix="/email", tags=["email"])
@@ -14,12 +14,6 @@ class EmailListResponse(BaseModel):
     total: int
     emails: List[EmailOut]
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.get("/list", response_model=EmailListResponse)
 def list_emails(
@@ -35,6 +29,8 @@ def list_emails(
     count_only: bool = Query(False)
 ):
     query = db.query(EmailLog)
+    # Debug: print limit and offset to verify
+    print(f"[EMAIL LIST] limit={limit} (type={type(limit)}), offset={offset} (type={type(offset)})")
 
     if unread:
         query = query.filter(EmailLog.is_read == False)
@@ -64,10 +60,15 @@ def list_emails(
 
     # Paginate and return results
     total = query.count()
+    # Ensure limit is int (FastAPI should handle, but double-check)
+    try:
+        limit = int(limit)
+    except Exception:
+        limit = 10
     emails = query.offset(offset).limit(limit).all()
     # Ensure received_at is stored in UTC in your DB models/migrations
     return EmailListResponse(
         total=total,
-        emails=[EmailOut.from_orm(email) for email in emails]
+        emails=[EmailOut.model_validate(email, from_attributes=True) for email in emails]
     )
     

@@ -1,6 +1,9 @@
 version: '3.8'
 services:
   backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     image: saulverae/fastapi-inbox-automation:latest
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     ports:
@@ -9,10 +12,9 @@ services:
       - db
       - redis
       - celery_worker
-    volumes:
-      - ./backend:/backend
     env_file:
       - .env
+
     restart: always
   frontend:
     build:
@@ -41,11 +43,12 @@ services:
     build:
       context: .
       dockerfile: celery_worker/Dockerfile
-    working_dir: /app
-    command: celery -A celery_worker.tasks.celery_app worker --loglevel=info
+    command: celery -A celery_worker.tasks worker --loglevel=info
     depends_on:
       - redis
       - db
+    env_file:
+      - .env
   db:
     image: postgres:14
     restart: always
@@ -59,5 +62,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
     env_file:
       - .env
+  frontend-build:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: sh -c "npm install && npm run build"
+
 volumes:
-  postgres_data: {} 
+  postgres_data: {}

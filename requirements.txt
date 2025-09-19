@@ -1,9 +1,22 @@
+# Core FastAPI stack
 fastapi
 uvicorn
+
+# Background task processing
 celery
 redis
+
+# Database and ORM
 sqlalchemy
 psycopg2-binary
+alembic>=1.11.0
+
+# Environment and config
 python-dotenv==1.1.1
 pydantic
-alembic>=1.11.0
+
+# Email validation for Pydantic
+email-validator
+
+# Rate limiting
+slowapi

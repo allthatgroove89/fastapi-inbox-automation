@@ -27,7 +27,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script_stop: true
-          ssh_args: "-o StrictHostKeyChecking=no"
           command_timeout: "5m"
           script: |
             echo "✅ Connected to EC2"

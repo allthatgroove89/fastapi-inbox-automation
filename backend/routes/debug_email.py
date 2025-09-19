@@ -1,14 +1,13 @@
-from fastapi import APIRouter
-from backend.database import SessionLocal
-from backend.entities.email import EmailLog
+from fastapi import APIRouter, Depends
+from database import get_db
+from sqlalchemy.orm import Session
+from entities.email import EmailLog
 
 router = APIRouter(prefix="/email", tags=["email"])
 
 @router.get("/debug/emails")
-def debug_emails(limit: int = 10):
-    session = SessionLocal()
-    emails = session.query(EmailLog).order_by(EmailLog.received_at.desc()).limit(10).all()
-    session.close()
+def debug_emails(limit: int = 10, db: Session = Depends(get_db)):
+    emails = db.query(EmailLog).order_by(EmailLog.received_at.desc()).limit(limit).all()
     return [
         {
             "from": e.sender,

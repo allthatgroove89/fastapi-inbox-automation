@@ -1,16 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.database import SessionLocal
-from backend.entities.email import EmailLog
+from database import get_db
+from entities.email import EmailLog
 
 router = APIRouter(prefix="/email", tags=["email"])
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.delete("/delete/{email_id}")
 def delete_email(email_id: int, db: Session = Depends(get_db)):
@@ -20,3 +14,23 @@ def delete_email(email_id: int, db: Session = Depends(get_db)):
     db.delete(email)
     db.commit()
     return {"status": "deleted"}
+
+@router.delete("/delete-spam")
+def delete_spam_emails(db: Session = Depends(get_db)):
+    deleted_count = db.query(EmailLog).filter(EmailLog.is_spam == True).delete()
+    db.commit()
+    return {
+        "status": "bulk_deleted",
+        "deleted_spam_count": deleted_count
+    }
+
+@router.delete("/delete-older-than/{days}")
+def delete_emails_older_than(days: int, db: Session = Depends(get_db)):
+    from datetime import datetime, timedelta, timezone
+    threshold = datetime.now(timezone.utc) - timedelta(days=days)
+    deleted_count = db.query(EmailLog).filter(EmailLog.received_at < threshold).delete()
+    db.commit()
+    return {
+        "status": "bulk_deleted",
+        "deleted_count": deleted_count
+    }

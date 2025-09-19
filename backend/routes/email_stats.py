@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends
-from backend.database import SessionLocal
-from backend.entities.email import EmailLog
+from entities.email import EmailLog
 from sqlalchemy.orm import Session
-from backend.database import get_db
+from database import get_db
 
 router = APIRouter(prefix="/email", tags=["email"])
 

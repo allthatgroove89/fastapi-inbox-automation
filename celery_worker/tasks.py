@@ -1,6 +1,6 @@
 from celery import Celery
 from celery.schedules import crontab
-from .config import (
+from celery_worker.config import (
     CELERY_BROKER_URL,
     CELERY_RESULT_BACKEND,
     EMAIL_USER,
@@ -12,9 +12,9 @@ import imaplib
 import email
 from email import policy
 from typing import List, Dict, Any
-from datetime import datetime
-from backend.database import SessionLocal
-from backend.entities.email import EmailLog
+from datetime import datetime, timedelta, timezone
+from database import SessionLocal
+from entities.email import EmailLog
 import logging
 
 logger = logging.getLogger(__name__)
@@ -109,3 +109,17 @@ celery_app.conf.beat_schedule = {
         "schedule": crontab(minute="*/10"),
     },
 }
+
+@celery_app.task
+def auto_delete_spam():
+    db = SessionLocal()
+    try:
+        threshold = datetime.now(timezone.utc) - timedelta(days=7)
+        deleted = db.query(EmailLog).filter(
+            EmailLog.is_spam == True,
+            EmailLog.received_at < threshold
+        ).delete()
+        db.commit()
+        return deleted
+    finally:
+        db.close()
