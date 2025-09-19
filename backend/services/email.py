@@ -48,12 +48,14 @@ def sync_emails(imap_config: dict, folder: str = '"INBOX"') -> list:
             raw_email = data[0][1]
             msg = message_from_bytes(raw_email)
             subject = msg["subject"]
+            sender = msg["From"]
             body = msg.get_payload(decode=True)
             if isinstance(body, bytes):
                 body = body.decode(errors="ignore")
             email_list.append({
                 "id": num.decode(),
                 "subject": subject,
+                "sender": sender,
                 "body": body,
                 "folder": folder
             })
