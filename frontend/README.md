@@ -50,4 +50,4 @@ IMAP credentials are stored locally per user (extendable)
 
 For full functionality, ensure Gmail IMAP is enabled and folders are exposed
 
-![alt text](image.png)
+![Dashboard Preview](frontend/image.png)
