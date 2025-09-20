@@ -1,3 +1,16 @@
+button.active {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+}
+/* Highlight active filter button */
+.email-filter__labels button.active {
+  background: #3182ce;
+  color: #fff;
+  font-weight: bold;
+  border: 1.5px solid #2b6cb0;
+  box-shadow: 0 2px 8px rgba(49,130,206,0.08);
+}
 .email-filter {
   margin-bottom: 2rem;
 }

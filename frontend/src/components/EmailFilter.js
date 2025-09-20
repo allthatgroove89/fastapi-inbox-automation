@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './EmailFilter.css';
 
-function EmailFilter({ onFilter }) {
+function EmailFilter({ onFilter, activeSpam }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [olderThan, setOlderThan] = useState('');
 
@@ -33,13 +33,27 @@ function EmailFilter({ onFilter }) {
       <p className="email-filter__hint">Filters apply instantly to stored emails.</p>
 
       <div className="email-filter__labels">
-        <button onClick={() => onFilter({ spam: false })}>📥 Inbox</button>
-        <button onClick={() => onFilter({ spam: true })}>🧹 Spam</button>
+        <button
+          className={activeSpam === false ? 'active' : ''}
+          onClick={() => onFilter({ spam: false })}
+        >
+          📥 Inbox
+        </button>
+        <button
+          className={activeSpam === true ? 'active' : ''}
+          onClick={() => onFilter({ spam: true })}
+        >
+          🧹 Spam
+        </button>
+        <button
+          onClick={() => onFilter({ spam: true, older_than: 7 })}
+        >
+          🧹 Spam (7d)
+        </button>
+        <button onClick={handleReset} className="email-filter__reset">🔄 Show All</button>
       </div>
 
       <div className="email-filter__controls">
-  <button onClick={() => onFilter({ spam: true })}>🧹 Spam (7d)</button>
-
         <label className="email-filter__dropdown">
           ⏳ Older Than:
           <select value={olderThan} onChange={handleOlderChange}>
@@ -57,8 +71,6 @@ function EmailFilter({ onFilter }) {
           onChange={handleSearchChange}
           className="email-filter__search"
         />
-
-        <button onClick={handleReset} className="email-filter__reset">🔄 Reset</button>
       </div>
     </div>
   );

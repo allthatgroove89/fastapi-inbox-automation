@@ -80,7 +80,7 @@ function App() {
           )}
           {isConnecting && <p>Connecting...</p>}
           {connectionMessage && <p>{connectionMessage}</p>}
-          <EmailFilter onFilter={handleFilter} />
+          <EmailFilter onFilter={handleFilter} activeSpam={filter.spam} />
           <EmailReader onRead={handleEmailRead} />
         </section>
         <section className="dashboard-panel dashboard-panel--right">

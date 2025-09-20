@@ -11,8 +11,14 @@ from typing import List, Optional, Dict
 router = APIRouter(prefix="/email", tags=["email"])
 
 
-# Simple spam keywords for demonstration
-SPAM_KEYWORDS = ["spam", "viagra", "lottery", "prince", "free money", "winner", "click here"]
+# Expanded spam keywords for demonstration
+SPAM_KEYWORDS = [
+    "spam", "viagra", "lottery", "prince", "free money", "winner", "click here",
+    "gratis", "free delivery", "últimos días", "participar", "evento", "40% off", "sale",
+    "exclusive deals", "upgrade", "premium", "limited time", "descuento", "envío gratis",
+    "oferta", "ahorra", "rebaja", "promoción", "click aquí", "encuesta", "¡última oportunidad!",
+    "act now", "deal ends", "save", "eco", "shop", "course", "bootcamp", "drum content"
+]
 
 class SpamFilterResult(BaseModel):
     total_checked: int
@@ -49,7 +55,7 @@ class EmailListResponse(BaseModel):
 def list_emails(
     db: Session = Depends(get_db),
     unread: bool = Query(False),
-    spam: bool = Query(False),
+    spam: Optional[bool] = Query(None),
     search: Optional[str] = Query(None),
     older_than: int = Query(None),
     limit: int = Query(50),
@@ -59,14 +65,18 @@ def list_emails(
     count_only: bool = Query(False)
 ):
     query = db.query(EmailLog)
-    # Debug: print limit and offset to verify
-    print(f"[EMAIL LIST] limit={limit} (type={type(limit)}), offset={offset} (type={type(offset)})")
+    # Debug: print limit, offset, and spam to verify
+    print(f"[EMAIL LIST] limit={limit} (type={type(limit)}), offset={offset} (type={type(offset)}), spam={spam} (type={type(spam)})")
 
     if unread:
         query = query.filter(EmailLog.is_read == False)
 
-    if spam:
+    # Only filter by spam if spam is not None
+    if spam is True:
         query = query.filter(EmailLog.is_spam == True)
+    elif spam is False:
+        query = query.filter(EmailLog.is_spam == False)
+    # If spam is None, do not filter by is_spam at all
 
     if older_than:
         cutoff = datetime.now(timezone.utc) - timedelta(days=older_than)

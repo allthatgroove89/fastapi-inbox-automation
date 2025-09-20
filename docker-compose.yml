@@ -20,8 +20,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "3000:80"  # React served via Nginx
     depends_on:
       - backend
     restart: always
