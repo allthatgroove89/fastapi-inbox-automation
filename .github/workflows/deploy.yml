@@ -23,7 +23,7 @@ jobs:
       # 🎨 Build and push frontend
       - name: Build and push frontend Docker image
         run: |
-          docker build -f ./frontend/Dockerfile -t saulverae/inbox-frontend:latest .
+          docker build -f ./frontend/Dockerfile -t saulverae/inbox-frontend:latest ./frontend
           docker push saulverae/inbox-frontend:latest
 
       # ⚙️ Build and push celery worker
@@ -67,3 +67,4 @@ jobs:
             docker-compose down
             docker-compose up -d --build
             docker-compose ps
+
