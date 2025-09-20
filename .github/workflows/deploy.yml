@@ -32,12 +32,6 @@ jobs:
           docker build -f ./celery_worker/Dockerfile -t saulverae/inbox-celery:latest .
           docker push saulverae/inbox-celery:latest
 
-      # 🌐 Build and push nginx (optional if mounting config)
-      - name: Build and push nginx Docker image
-        run: |
-          docker build -f ./nginx/Dockerfile -t saulverae/inbox-nginx:latest .
-          docker push saulverae/inbox-nginx:latest
-
       # 🚀 Deploy to EC2
       - name: Deploy via SSH to EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -67,4 +61,5 @@ jobs:
             docker-compose down
             docker-compose up -d --build
             docker-compose ps
+
 
